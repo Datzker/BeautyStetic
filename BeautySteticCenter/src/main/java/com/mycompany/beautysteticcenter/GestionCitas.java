@@ -2,6 +2,7 @@
 * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
 * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
 */
+
 package com.mycompany.beautysteticcenter;
 
 /**
@@ -13,163 +14,75 @@ package com.mycompany.beautysteticcenter;
 */
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Scanner;
 
-public class GestionCitas {
-    private List<Cliente> clientes;
-    private List<Cita> citas;
+class Cita {
+    private String nombre;
+    private String correo;
+    private String fecha;
+    private String hora;
+    public Cita(String nombre, String correo, String fecha, String hora) {
+        this.nombre = nombre;
+        this.correo = correo;
+        this.fecha = fecha;
+        this.hora = hora;
+    }
+    public String getNombre() { return nombre; }
+    public String getCorreo() { return correo; }
+    public String toString() {
+        return "Nombre: " + nombre + ", Correo: " + correo + ", Fecha: " + fecha + ", Hora: " + hora;
+    }
+}
 
-    public GestionCitas() {
-        clientes = new ArrayList<>();
-        citas = new ArrayList<>();
-    }    
-    
-    // Registrar un nuevo cliente
-    public void registrarCliente(String nombre, String telefono, String correo) {
-        Cliente nuevoCliente = new Cliente(nombre, telefono, correo);
-        clientes.add(nuevoCliente);
-        System.out.println("El cliente fue registrado: ID: " + nuevoCliente.getId() + ", Nombre: " + nuevoCliente.getNombre() + ", Teléfono: " + nuevoCliente.getTelefono() + ", Correo: " + nuevoCliente.getCorreo());
-    }    
-    
-    // Registrar una nueva cita
-    public void registrarCita(int idCliente, String fechaHora) {
-        Cliente cliente = buscarClientePorId(idCliente);
-
-        if (cliente != null) {
-            Cita nuevaCita = new Cita(cliente, fechaHora);
-            citas.add(nuevaCita);
-
-            System.out.println("Cita registrada para " + cliente.getNombre() + " (ID: " + cliente.getId() + ") en " + nuevaCita.getFechaHora());
-            Notificaciones.enviarNotificacion(cliente.getCorreo(), nuevaCita.getFechaHora());
-        } else {
-            System.out.println("El cliente indicado no existe en el sistema.");
-        }
-    }    
-    
-    // Cancelar una cita existente
-    public void cancelarCita(int idCliente, String fechaHora) {
-        Cita cita = buscarCita(idCliente, fechaHora);
-
-        if (cita != null) {
-            citas.remove(cita);
-            System.out.println("Cita cancelada para " + cita.getCliente().getNombre() + " (ID: " + cita.getCliente().getId() + ") en " + cita.getFechaHora());
-            Notificaciones.enviarNotificacion(cita.getCliente().getCorreo(), null);
-        } else {
-            System.out.println("La cita indicada no existe en el sistema.");
-        }
-    }    
-    
-    // Reprogramar una cita existente
-    public void reprogramarCita(int idCliente, String fechaHoraActual, String nuevaFechaHora) {
-        Cita cita = buscarCita(idCliente, fechaHoraActual);
-        if (cita != null) {
-            cita.setFechaHora(nuevaFechaHora);
-            System.out.println("Cita reprogramada para " + cita.getCliente().getNombre() + " (ID: " + cita.getCliente().getId() + ") a " + nuevaFechaHora);
-            Notificaciones.enviarNotificacion(cita.getCliente().getCorreo(), nuevaFechaHora);
-        } else {
-            System.out.println("La cita indicada no existe en el sistema.");
-        }
-    }    
-    
-    // Notificación automática mejorada: solo notifica si el cliente y al menos una cita existen
-    public void notificacionAutomatica(int idCliente) {
-        Cliente cliente = buscarClientePorId(idCliente);
-
-        if (cliente != null) {
-            boolean tieneCita = false;
-
-            for (Cita cita : citas) {
-                if (cita.getCliente().getId() == idCliente) {
-                    tieneCita = true;
-                    // Notifica por cada cita activa
-                    Notificaciones.enviarNotificacion(cliente.getCorreo(), cita.getFechaHora());
-                }
+public class GestionCitas extends FuncionBase {
+    private static ArrayList<Cita> citas = new ArrayList<>();
+    public static ArrayList<Cita> getCitas() { return citas; }
+    @Override
+    public void ejecutar() {
+        Scanner sc = new Scanner(System.in);
+        int op;
+        do {
+            System.out.println("\n--- Gestión de Citas ---");
+            System.out.println("1. Agendar cita");
+            System.out.println("2. Listar citas");
+            System.out.println("3. Cancelar cita");
+            System.out.println("0. Volver al menú principal");
+            System.out.print("Seleccione una opción: ");
+            op = sc.nextInt(); sc.nextLine();
+            switch(op) {
+                case 1:
+                    System.out.print("Nombre: ");
+                    String nombre = sc.nextLine();
+                    System.out.print("Correo: ");
+                    String correo = sc.nextLine();
+                    System.out.print("Fecha (dd/mm/yyyy): ");
+                    String fecha = sc.nextLine();
+                    System.out.print("Hora (hh:mm): ");
+                    String hora = sc.nextLine();
+                    citas.add(new Cita(nombre, correo, fecha, hora));
+                    System.out.println("Cita agendada.");
+                    break;
+                case 2:
+                    if (citas.isEmpty()) System.out.println("No hay citas.");
+                    else for (int i = 0; i < citas.size(); i++)
+                        System.out.println((i+1)+". "+citas.get(i));
+                    break;
+                case 3:
+                    if (citas.isEmpty()) { System.out.println("No hay citas para cancelar."); break; }
+                    for (int i = 0; i < citas.size(); i++)
+                        System.out.println((i+1)+". "+citas.get(i));
+                    System.out.print("Ingrese el número de cita a cancelar: ");
+                    int idx = sc.nextInt(); sc.nextLine();
+                    if (idx > 0 && idx <= citas.size()) {
+                        citas.remove(idx-1);
+                        System.out.println("Cita cancelada.");
+                    } else System.out.println("Índice inválido.");
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Opción inválida.");
             }
-
-            if (!tieneCita) {
-                System.out.println("El cliente no tiene citas registradas para notificar.");
-            } else {
-                System.out.println("El cliente " + cliente.getNombre() + " (ID: " + cliente.getId() + ") ha sido notificado por todas sus citas activas.");
-            }
-        } else {
-            System.out.println("El ID de cliente indicado no existe.");
-        }
-    }
-
-    public void notificarCancelacion(int idCliente, String fechaHora) {
-        Cliente cliente = buscarClientePorId(idCliente);
-
-        if (cliente != null) {
-            Cita cita = buscarCita(idCliente, fechaHora);
-
-            if (cita != null) {
-                Notificaciones.enviarNotificacion(cliente.getCorreo(), null);
-                System.out.println("El cliente " + cliente.getNombre() + " (ID: " + cliente.getId() + ") ha sido notificado de la cancelación de la cita en " + fechaHora + ".");
-            
-            } else {
-                System.out.println("La cita indicada no existe para este cliente.");
-            }
-
-        } else {
-            System.out.println("El ID de cliente indicado no existe.");
-        }
-    }
-
-    // Método para listar todos los clientes registrados
-    public void listarClientes() {
-
-        if (clientes.isEmpty()) {
-            System.out.println("No hay clientes registrados.");
-        } else {
-            System.out.println("Clientes registrados:");
-
-            for (Cliente c : clientes) {
-                System.out.println("ID: " + c.getId() + ", Nombre: " + c.getNombre() + ", Teléfono: " + c.getTelefono() + ", Correo: " + c.getCorreo());
-            }
-        }
-    }
-
-    // Método para listar todas las citas creadas y el ID de cliente asociado
-    public void listarCitas() {
-        if (citas.isEmpty()) {
-            System.out.println("No hay citas registradas.");
-        } else {
-            System.out.println("Citas registradas:");
-
-            for (Cita c : citas) {
-                System.out.println("Cliente ID: " + c.getCliente().getId() + ", Nombre: " + c.getCliente().getNombre() + ", Fecha y hora: " + c.getFechaHora());
-            }
-        }
-    }
-
-    public Cliente getClientePorId(int idCliente) {
-        return buscarClientePorId(idCliente);
-    }
-
-    public List<Cita> getCitasDeCliente(int idCliente) {
-        List<Cita> citasCliente = new ArrayList<>();
-
-        for (Cita c : citas) {
-            if (c.getCliente().getId() == idCliente) {
-                citasCliente.add(c);
-            }
-        }
-        return citasCliente;
-    }
-
-    private Cliente buscarClientePorId(int idCliente) {
-
-        for (Cliente c : clientes) {
-            if (c.getId() == idCliente) return c;
-        }
-        return null;
-    }
-
-    private Cita buscarCita(int idCliente, String fechaHora) {
-
-        for (Cita c : citas) {
-            if (c.getCliente().getId() == idCliente && c.getFechaHora().equals(fechaHora)) return c;
-        }
-        return null;
+        } while(op != 0);
     }
 }

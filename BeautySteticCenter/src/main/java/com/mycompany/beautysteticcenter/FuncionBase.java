@@ -12,11 +12,6 @@ package com.mycompany.beautysteticcenter;
 *       Carlos Mario Montes Rua.																	
 *       Daniel Eduardo González Palacio.																
 */
-
-public class ListarCitas {
-
-    public static void ejecutar(GestionCitas sistema) {
-
-        sistema.listarCitas();
-    }
+public abstract class FuncionBase {
+    public abstract void ejecutar();
 }
