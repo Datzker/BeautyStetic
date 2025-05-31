@@ -17,13 +17,16 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ProcesamientoPagos extends FuncionBase {
+
     private static double saldoTotal = 0;
     private static ArrayList<String[]> pagos = new ArrayList<>(); // [nombre, correo, monto]
     public static ArrayList<String[]> getPagos() { return pagos; }
+
     @Override
     public void ejecutar() {
         Scanner sc = new Scanner(System.in);
         int op;
+
         do {
             System.out.println("\n--- Procesamiento de Pagos ---");
             System.out.println("1. Registrar pago");
@@ -32,12 +35,15 @@ public class ProcesamientoPagos extends FuncionBase {
             System.out.println("0. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
             op = sc.nextInt(); sc.nextLine();
+
             switch(op) {
                 case 1:
                     System.out.print("Nombre del cliente: ");
                     String cliente = sc.nextLine();
+
                     System.out.print("Correo del cliente: ");
                     String correo = sc.nextLine();
+
                     System.out.print("Monto del pago: $");
                     double monto = sc.nextDouble(); sc.nextLine();
                     saldoTotal += monto;

@@ -20,11 +20,13 @@ class Reclamo {
     private String cliente;
     private String correo;
     private String descripcion;
+
     public Reclamo(String cliente, String correo, String descripcion) {
         this.cliente = cliente;
         this.correo = correo;
         this.descripcion = descripcion;
     }
+
     public String getCliente() { return cliente; }
     public String getCorreo() { return correo; }
     public String toString() {
@@ -35,6 +37,7 @@ class Reclamo {
 public class GestionReclamos extends FuncionBase {
     private static ArrayList<Reclamo> reclamos = new ArrayList<>();
     public static ArrayList<Reclamo> getReclamos() { return reclamos; }
+
     @Override
     public void ejecutar() {
         Scanner sc = new Scanner(System.in);
@@ -46,14 +49,18 @@ public class GestionReclamos extends FuncionBase {
             System.out.println("0. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
             op = sc.nextInt(); sc.nextLine();
+            
             switch(op) {
                 case 1:
                     System.out.print("Nombre del cliente: ");
                     String cliente = sc.nextLine();
+
                     System.out.print("Correo del cliente: ");
                     String correo = sc.nextLine();
+
                     System.out.print("Descripción del reclamo/queja: ");
                     String desc = sc.nextLine();
+                    
                     reclamos.add(new Reclamo(cliente, correo, desc));
                     System.out.println("Reclamo registrado.");
                     break;

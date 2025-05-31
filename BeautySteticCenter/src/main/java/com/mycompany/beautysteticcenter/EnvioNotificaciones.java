@@ -44,20 +44,24 @@ public class EnvioNotificaciones extends FuncionBase {
             System.out.println("0. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
             op = sc.nextInt(); sc.nextLine();
+
             switch(op) {
                 case 1:
                     System.out.print("Nombre del destinatario: ");
                     String nombre = sc.nextLine();
                     System.out.print("Correo electrónico: ");
                     String correo = sc.nextLine();
+
                     if (!datosValidos(nombre, correo)) {
                         System.out.println("Datos inválidos. Intente de nuevo.");
                         break;
                     }
+
                     if (existeDestinatario(nombre, correo)) {
                         System.out.println("El destinatario ya está registrado.");
                         break;
                     }
+
                     destinatarios.add(new Destinatario(nombre, correo));
                     System.out.println("Destinatario registrado.");
                     break;
@@ -69,8 +73,10 @@ public class EnvioNotificaciones extends FuncionBase {
                         System.out.println("No hay destinatarios registrados.");
                         break;
                     }
+
                     System.out.print("Mensaje de notificación: ");
                     String mensaje = sc.nextLine();
+
                     for (Destinatario d : destinatarios) {
                         String noti = "[SIMULADO] Enviado a: " + d.getNombre() + " <" + d.getCorreo() + "> - Mensaje: " + mensaje;
                         notificaciones.add(noti);
@@ -125,8 +131,10 @@ public class EnvioNotificaciones extends FuncionBase {
 
     private boolean existeDestinatario(String nombre, String correo) {
         if (!datosValidos(nombre, correo)) return false;
+        
         String nombreTrim = nombre.trim();
         String correoTrim = correo.trim();
+
         for (Destinatario d : destinatarios) {
             if (d.getNombre().trim().equalsIgnoreCase(nombreTrim) && d.getCorreo().trim().equalsIgnoreCase(correoTrim)) {
                 return true;
